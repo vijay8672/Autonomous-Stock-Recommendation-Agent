@@ -6,6 +6,15 @@ __pycache__/
 # C extensions
 *.so
 
+# Ignore config.yml
+config.yml
+
+# Ignore environment variable files
+.env
+
+# Ignore log files
+logs/
+
 # Distribution / packaging
 .Python
 build/
