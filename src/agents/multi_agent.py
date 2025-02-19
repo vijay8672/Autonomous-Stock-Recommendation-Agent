@@ -23,8 +23,8 @@ groq_model = Groq(id="qwen-2.5-32b", api_key=GROQ_API_KEY)
 class MultiAgent:
     def __init__(self):
         logger.info("Creating Multi AI Agent")
-        self.finance_agent = financial_agent()  # Initialize finance agent
         self.websearch_agent = web_search_agent()  # Initialize web search agent
+        self.finance_agent = financial_agent()  # Initialize finance agent
         logger.info("Agents are created successfully")
 
     def multi_ai_agent(self):
@@ -46,10 +46,10 @@ class MultiAgent:
     def run(self, query):
         try:
             multiai_agent = self.multi_ai_agent()  # Initialize multi-agent
-            # Assuming you might want to call a method like query() instead of print_response()
-            # Replace print_response with the correct function to get the result
-            response = multiai_agent.query(query)  # This method might be 'query()' or similar
-            print(response)  # Print the response from the multi-agent
+            
+            response = multiai_agent.print_response(query)  # This method might be 'query()' or similar
+            
+            return response  # Print the response from the multi-agent
             
         except Exception as e:
             logger.error(f"An error occurred: {e}")
