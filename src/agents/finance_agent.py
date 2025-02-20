@@ -28,42 +28,34 @@ groq_model = Groq(id="llama3-8b-8192", api_key=GROQ_API_KEY)
 # Initialize Financial Agent
 logger.info("Creating Financial Agent")
 
-def financial_agent(query, retries=3, wait=5):
-    for attempt in range(retries):
-        try:
-            finance_agent = Agent(
-                name="Stock Financial Advisor Agent",
-                description="You are an investment analyst, researching stock prices, analyst recommendations, and stock fundamentals.",
-                model=groq_model,
-                tools=[
-                    YFinanceTools(
-                        stock_price=True,
-                        analyst_recommendations=True,
-                        stock_fundamentals=True,
-                        company_news=True,
-                        company_info=True,
-                        historical_prices=True,
-                    )
-                ],
-                instructions=["Format your response using markdown and use tables to display data where possible."],
-                show_tools_calls=True,
-                markdown=True
+def financial_agent(query):
+    try:
+        finance_agent = Agent(
+            name="Stock Financial Advisor Agent",
+            description="You are an investment analyst, researching stock prices, analyst recommendations, and stock fundamentals.",
+            model=groq_model,
+            tools=[
+                YFinanceTools(
+                    stock_price=True,
+                    analyst_recommendations=True,
+                    stock_fundamentals=True,
+                    company_news=True,
+                    company_info=True,
+                    historical_prices=True,
+                )
+            ],
+            instructions=["Format your response using markdown and use tables to display data where possible."],
+            show_tools_calls=True,
+            markdown=True
             )
 
-            response = finance_agent.print_response(query)
+        response = finance_agent.print_response(query)
+        return response
+        
 
-            # Check if the response contains rate-limiting error
-            if response is None or "rate limiting" in response.lower() or "too many requests" in response.lower():
-                logger.warning(f"Rate limit hit on attempt {attempt + 1}/{retries}. Retrying...")
-                time.sleep(wait)
-            else:
-                return response  # Return correct response
+    except Exception as e:
+        logger.error(f"Error fetching stock data: {e}")
 
-        except Exception as e:
-            logger.error(f"Error fetching stock data: {e}")
-            time.sleep(wait)
-
-    return "**⚠ Unable to fetch live stock data due to rate limits. Please try again later or use an alternative source like Yahoo Finance.**"
 
 
 
